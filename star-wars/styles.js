@@ -6,26 +6,6 @@ export default StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  networkMessage: {
-    backgroundColor: '#ffcccb',
-    padding: 10,
-  },
-  networkText: {
-    color: '#d9534f',
-    textAlign: 'center',
-  },
-  contentText: {
-    textAlign: 'center',
-    marginTop: 20,
-    fontSize: 18,
-  },
-  
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
   listItem: {
     padding: 15,
     marginVertical: 5,
@@ -62,9 +42,6 @@ export default StyleSheet.create({
     width: '100%',
     height: 100,
     resizeMode: 'contain'
-  },
-  listContainer: {
-    paddingBottom: 20,
   },
   activityIndicator:{
     size:"large",

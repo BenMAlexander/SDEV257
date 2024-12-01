@@ -156,7 +156,7 @@ const Films = () => {
       <Image 
         style={styles.image} 
         source={staticImage}
-        />     0
+        />     
       <SearchAndModal 
         onSearchSubmit={handleSearchSubmit} 
         showModal={showModal} 
