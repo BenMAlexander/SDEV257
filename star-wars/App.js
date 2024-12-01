@@ -220,12 +220,11 @@ const DrawerNavigation = () => (
   </Drawer.Navigator>
 );
 
-// App Component
+// App 
 export default function App() {
   const [isConnected, setIsConnected] = useState(true);
 
   useEffect(() => {
-    // Subscribe to network changes
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
       if (!state.isConnected) {
@@ -236,7 +235,6 @@ export default function App() {
       }
     });
 
-    // Cleanup the subscription on unmount
     return () => unsubscribe();
   }, []);
   return (
