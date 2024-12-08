@@ -46,9 +46,4 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  listItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
 })

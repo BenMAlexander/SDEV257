@@ -10,8 +10,9 @@ import styles from './styles';
 import NetInfo from '@react-native-community/netinfo';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+//Assets
 const staticImage = require("./assets/swBanner.png");
-
+//API Call
 const fetchData = async (url, setData, setLoading) => {
   setLoading(true);
   try {
@@ -23,7 +24,7 @@ const fetchData = async (url, setData, setLoading) => {
     setLoading(false);
   }
 };
-
+//Swipable Data
 const DataList = ({ data, loading, showModal }) => {
   if (loading) {
     return <ActivityIndicator 
@@ -57,7 +58,7 @@ const DataList = ({ data, loading, showModal }) => {
     </ScrollView>
   );
 };
-
+//Subpage for Planets - Provides details
 const PlanetDetail = ({ route }) => {
   const { planet } = route.params; 
 
@@ -75,7 +76,7 @@ const PlanetDetail = ({ route }) => {
     </ScrollView>
   );
 };
-
+//Planets Screen
 const Planets = ({ navigation }) => {
   const [planets, setPlanets] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -137,7 +138,7 @@ const Planets = ({ navigation }) => {
     </View>
   );
 };
-
+//Films Screen
 const Films = () => {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -174,7 +175,6 @@ const Films = () => {
     <View style={styles.container}>
       <Image style={styles.image} source={staticImage} />
       
-      {/* Real-time search input */}
       <TextInput
         style={styles.searchInput}
         placeholder="Search for a film"
@@ -202,7 +202,7 @@ const Films = () => {
     </View>
   );
 };
-
+//Spaceships screen
 const Spaceships = () => {
   const [spaceships, setSpaceships] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -265,7 +265,7 @@ const Spaceships = () => {
   );
 };
 
-
+//Subpage of planets -- did this so detailed planes was not in nav.
 const PlanetStack = createNativeStackNavigator();
 const PlanetsStackScreen = () => (
   <PlanetStack.Navigator screenOptions={{ headerShown: false }}>
@@ -274,7 +274,7 @@ const PlanetsStackScreen = () => (
   </PlanetStack.Navigator>
 );
 
-
+//IOS 
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => (
   <Tab.Navigator>
@@ -283,8 +283,7 @@ const BottomTabs = () => (
     <Tab.Screen name="Spaceships" component={Spaceships} />
   </Tab.Navigator>
 );
-
-
+//Android
 const Drawer = createDrawerNavigator();
 const DrawerNavigation = () => (
   <Drawer.Navigator>
@@ -293,7 +292,7 @@ const DrawerNavigation = () => (
     <Drawer.Screen name="Spaceships" component={Spaceships} />
   </Drawer.Navigator>
 );
- 
+//App 
 export default function App() {
   const [isConnected, setIsConnected] = useState(true);
 
