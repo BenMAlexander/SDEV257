@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Text, View, Platform, ActivityIndicator, TextInput, Modal, Button, ScrollView, Image, Alert } from 'react-native';
+import { Text, View, Platform, ActivityIndicator, TextInput, ScrollView, Image, Alert } from 'react-native';
 import axios from 'axios';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
