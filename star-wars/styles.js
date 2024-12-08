@@ -17,9 +17,6 @@ export default StyleSheet.create({
   listContainer: {
     paddingBottom: 20,
   },
-  searchContainer: {
-    marginBottom: 20,
-  },
   searchInput: {
     height: 40,
     borderColor: '#ccc',
@@ -32,12 +29,6 @@ export default StyleSheet.create({
     width: 75,
     height: 100,
   },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
   image: {
     width: '100%',
     height: 100,
@@ -47,10 +38,17 @@ export default StyleSheet.create({
     size:"large",
     color:"#0000ff",
   },
-  modalContent: {
-    backgroundColor: '#fff',
+  detailContainer: {
     padding: 20,
-    borderRadius: 10,
-    width: '80%',
+  },
+  detailTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  listItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
 })

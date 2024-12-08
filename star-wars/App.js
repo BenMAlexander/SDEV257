@@ -8,12 +8,10 @@ import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler'
 import Animated from 'react-native-reanimated';
 import styles from './styles';
 import NetInfo from '@react-native-community/netinfo';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-// Assets
 const staticImage = require("./assets/swBanner.png");
 
-// Fetching and List Components
 const fetchData = async (url, setData, setLoading) => {
   setLoading(true);
   try {
@@ -32,7 +30,6 @@ const DataList = ({ data, loading, showModal }) => {
       style={styles.activityIndicator}/>;
   }
 
-  // Function to render individual items with swipeable actions
   const renderItem = ({ item, index }) => {
     const swipeableRef = useRef(null); 
     const handleSwipeAction = () => {
@@ -61,77 +58,82 @@ const DataList = ({ data, loading, showModal }) => {
   );
 };
 
-// Remaining components (SearchAndModal, screens, etc.) remain unchanged
-const SearchAndModal = ({onSearchSubmit}) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSearchSubmit = (text) => {
-    setSearchText(text);
-    setModalVisible(true);
-  };
-  const handleSubmit = () => {
-    onSearchSubmit(searchTerm);
-    setModalVisible(true); // Show the modal with the search term
-  };
+const PlanetDetail = ({ route }) => {
+  const { planet } = route.params; 
 
   return (
-    <View style={styles.searchContainer}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Enter search term"
-        value={searchTerm}
-        onChangeText={setSearchTerm}
-        onSubmitEditing={(event) => handleSearchSubmit(event.nativeEvent.text)}
-      />
-      <Button 
-        title="Submit" 
-        onPress={handleSubmit}
-        />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text>You searched for: {searchTerm}</Text>
-            <Button title="Close" onPress={() => setModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
-    </View>
+    <ScrollView contentContainerStyle={styles.detailContainer}>
+      <Text style={styles.detailTitle}>{planet.name}</Text>
+      <Text>Population: {planet.population}</Text>
+      <Text>Climate: {planet.climate}</Text>
+      <Text>Terrain: {planet.terrain}</Text>
+      <Text>Diameter: {planet.diameter}</Text>
+      <Text>Gravity: {planet.gravity}</Text>
+      <Text>Orbital Period: {planet.orbital_period}</Text>
+      <Text>Rotation Period: {planet.rotation_period}</Text>
+      <Text>Surface Water: {planet.surface_water}</Text>
+    </ScrollView>
   );
 };
 
-const Planets = () => {
+const Planets = ({ navigation }) => {
   const [planets, setPlanets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filteredPlanets, setFilteredPlanets] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchData('https://swapi.dev/api/planets/', setPlanets, setLoading);
   }, []);
 
-  const handleSearchSubmit = (searchTerm) => {
-    console.log("Search submitted for:", searchTerm);
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    if (text === '') {
+      setFilteredPlanets(planets);
+    } else {
+      setFilteredPlanets(
+        planets.filter((planet) =>
+          planet.name.toLowerCase().includes(text.toLowerCase())
+        )
+      );
+    }
   };
-  const showModal = (item) => {
-    console.log("Item selected:", item.name || item.title);
-    alert(`You selected: ${item.name || item.title}`); // Display the item name in an alert (modal).
+
+  useEffect(() => {
+    setFilteredPlanets(planets); 
+  }, [planets]);
+
+  const showDetail = (planet) => {
+    navigation.navigate("PlanetDetail", { planet });
   };
+
   return (
     <View style={styles.container}>
-      <Image 
-        style={styles.image} 
-        source={staticImage}
-        />
-      <SearchAndModal onSearchSubmit={handleSearchSubmit} showModal={showModal} />
-      <DataList 
-        data={planets} 
-        loading={loading} 
-        showModal={showModal} 
-        />
+      <Image style={styles.image} source={staticImage} />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search for a planet"
+        value={searchTerm}
+        onChangeText={handleSearch}
+      />
+
+      {loading ? (
+        <ActivityIndicator style={styles.activityIndicator} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.listContainer}>
+          {filteredPlanets.map((item) => (
+            <Swipeable
+              key={item.name}
+              renderRightActions={() => <View style={styles.swipeAction} />}
+              onSwipeableRightOpen={() => showDetail(item)}
+            >
+              <View style={styles.listItem}>
+                <Text>{item.name}</Text>
+              </View>
+            </Swipeable>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -139,32 +141,64 @@ const Planets = () => {
 const Films = () => {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filteredFilms, setFilteredFilms] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchData('https://swapi.dev/api/films/', setFilms, setLoading);
   }, []);
 
-  const handleSearchSubmit = (searchTerm) => {
-    console.log("Search submitted for:", searchTerm);
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    if (text === '') {
+      setFilteredFilms(films); 
+    } else {
+      setFilteredFilms(
+        films.filter((film) =>
+          film.title.toLowerCase().includes(text.toLowerCase())
+        )
+      );
+    }
   };
+
+  useEffect(() => {
+    setFilteredFilms(films);
+  }, [films]);
+
   const showModal = (item) => {
-    console.log("Item selected:", item.name || item.title);
-    alert(`You selected: ${item.name || item.title}`); 
+    console.log("Item selected:", item.title);
+    alert(`You selected: ${item.title}`);
   };
+
   return (
     <View style={styles.container}>
-      <Image 
-        style={styles.image} 
-        source={staticImage}
-        />     
-      <SearchAndModal 
-        onSearchSubmit={handleSearchSubmit} 
-        showModal={showModal} 
-        />
-      <DataList 
-        data={films} 
-        loading={loading} 
-        showModal={showModal} />
+      <Image style={styles.image} source={staticImage} />
+      
+      {/* Real-time search input */}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search for a film"
+        value={searchTerm}
+        onChangeText={handleSearch} 
+      />
+
+      {loading ? (
+        <ActivityIndicator style={styles.activityIndicator} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.listContainer}>
+          {filteredFilms.map((item) => (
+            <Swipeable
+              key={item.title}
+              renderRightActions={() => <View style={styles.swipeAction} />}
+              onSwipeableRightOpen={() => showModal(item)}
+            >
+              <View style={styles.listItem}>
+                <Text>{item.title}</Text>
+              </View>
+            </Swipeable>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -172,35 +206,75 @@ const Films = () => {
 const Spaceships = () => {
   const [spaceships, setSpaceships] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filteredSpaceships, setFilteredSpaceships] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchData('https://swapi.dev/api/starships/', setSpaceships, setLoading);
   }, []);
 
-  const handleSearchSubmit = (searchTerm) => {
-    console.log("Search submitted for:", searchTerm);
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    if (text === '') {
+      setFilteredSpaceships(spaceships); 
+    } else {
+      setFilteredSpaceships(
+        spaceships.filter((spaceship) =>
+          spaceship.name.toLowerCase().includes(text.toLowerCase())
+        )
+      );
+    }
   };
+
+  useEffect(() => {
+    setFilteredSpaceships(spaceships);
+  }, [spaceships]);
+
   const showModal = (item) => {
     console.log("Item selected:", item.name);
     alert(`You selected: ${item.name}`);
   };
+
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={staticImage}/>
-      <SearchAndModal 
-        onSearchSubmit={handleSearchSubmit} 
-        showModal={showModal} 
-        />
-      <DataList 
-        data={spaceships} 
-        loading={loading} 
-        showModal={showModal} 
-        />
+      <Image style={styles.image} source={staticImage} />      
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search for a spaceship"
+        value={searchTerm}
+        onChangeText={handleSearch} 
+      />
+      {loading ? (
+        <ActivityIndicator style={styles.activityIndicator} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.listContainer}>
+          {filteredSpaceships.map((item) => (
+            <Swipeable
+              key={item.name}
+              renderRightActions={() => <View style={styles.swipeAction} />}
+              onSwipeableRightOpen={() => showModal(item)}
+            >
+              <View style={styles.listItem}>
+                <Text>{item.name}</Text>
+              </View>
+            </Swipeable>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
 
-// Tab Navigator (iOS)
+
+const PlanetStack = createNativeStackNavigator();
+const PlanetsStackScreen = () => (
+  <PlanetStack.Navigator screenOptions={{ headerShown: false }}>
+    <PlanetStack.Screen name="Planets" component={Planets} />
+    <PlanetStack.Screen name="PlanetDetail" component={PlanetDetail} />
+  </PlanetStack.Navigator>
+);
+
+
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => (
   <Tab.Navigator>
@@ -210,17 +284,16 @@ const BottomTabs = () => (
   </Tab.Navigator>
 );
 
-// Drawer Navigator (Android)
+
 const Drawer = createDrawerNavigator();
 const DrawerNavigation = () => (
   <Drawer.Navigator>
     <Drawer.Screen name="Films" component={Films} />
-    <Drawer.Screen name="Planets" component={Planets} />
+    <Drawer.Screen name="Planets" component={PlanetsStackScreen} />
     <Drawer.Screen name="Spaceships" component={Spaceships} />
   </Drawer.Navigator>
 );
-
-// App 
+ 
 export default function App() {
   const [isConnected, setIsConnected] = useState(true);
 
