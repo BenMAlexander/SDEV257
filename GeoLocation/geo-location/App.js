@@ -4,17 +4,15 @@ import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 import styles from "./styles";
 
-const API_KEY = "AIzaSyDrpmvoJJdpnctEAHcSbnlkDJo_Q8Say4U";
-const PLACES_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${API_KEY}&radius=5000&type=restaurant&location=`; // Increased radius to 5km
-
-export default function WhereAmI() {
+const API_KEY = "AIzaSyAsdjma23qUVL3qmnxUHOcJFAiBzqcNWYc"; 
+const PLACES_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${API_KEY}&radius=5000&type=restaurant&location=`;
+export default function App() {
   const [restaurants, setRestaurants] = useState([]);
   const [region, setRegion] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     function setPosition({ coords: { latitude, longitude } }) {
-      // Set region for map to start at the current position
       setRegion({
         latitude,
         longitude,
@@ -22,14 +20,13 @@ export default function WhereAmI() {
         longitudeDelta: 0.0421,
       });
 
-      // Fetch nearby restaurants using Google Places API
       fetch(`${PLACES_URL}${latitude},${longitude}`)
         .then((response) => response.json())
         .then(({ results, status }) => {
-          console.log("API Response:", results, "Status:", status);
+          console.log("API Response:", results, "Status:", status); 
           
           if (status === "OK" && results.length > 0) {
-            setRestaurants(results);
+            setRestaurants(results); 
           } else {
             console.log("No nearby restaurants found or API returned error");
             setRestaurants([]); 
@@ -45,7 +42,7 @@ export default function WhereAmI() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+        setErrorMsg("Permission was denied");
         return;
       }
 
@@ -79,7 +76,7 @@ export default function WhereAmI() {
           style={styles.mapView}
           showsUserLocation
           followUserLocation
-          initialRegion={region} // Set initialRegion dynamically based on user's location
+          initialRegion={region} 
         >
           {restaurants.map((restaurant, index) => (
             <Marker
@@ -108,3 +105,4 @@ export default function WhereAmI() {
     </View>
   );
 }
+
